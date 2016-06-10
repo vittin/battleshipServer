@@ -16,8 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class PageController {
     @RequestMapping(value = "/initGame", method = RequestMethod.GET)
     @ResponseBody
-    public void startGame(){
+    public String startGame(){
         System.out.println("hello");
+        return "Hello player, java here";
     }
 
 
