@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @CrossOrigin(origins = "http://localhost:63342")
 @RequestMapping("")
 public class PageController {
+
     @RequestMapping(value = "/initGame", method = RequestMethod.GET)
     @ResponseBody
     public String startGame(){
@@ -21,5 +22,10 @@ public class PageController {
         return "Hello player, java here";
     }
 
+    @RequestMapping(value = "/placeShip", method = RequestMethod.POST)
+    @ResponseBody
+    public boolean placeShip(){
 
+        return true;
+    }
 }
