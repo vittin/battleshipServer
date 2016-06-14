@@ -3,9 +3,7 @@ package org.cucumbers;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Mateusz on 2016-06-11.
- */
+/** Created by Mateusz on 2016-06-11. */
 
 public class Board {
 
@@ -25,41 +23,43 @@ public class Board {
 
     private Field getField(int x, int y) throws RuntimeException{
         int index = y*size + x;
-        if (index + 1 < size * size){
+        if (index < size * size){
             return fields.get(index);
         } else {
             throw new RuntimeException("Out of bounds");
         }
     }
 
-    public boolean placeShip(int x, int y, int size, boolean horizontally){
+    public boolean placeShip(Ship ship, int x, int y, boolean horizontally){
         int checkCoordinate;
         if (horizontally){checkCoordinate = x;} else {checkCoordinate = y;}
-        if (checkCoordinate + size < this.size){
-            Ship ship = new Ship(size);
-            List<Field> coords = new ArrayList<>();
-            for (int i = 0; i < size; i++){
+        if (checkCoordinate + ship.getSize() <= this.size){
+            List<Field> coordinates = new ArrayList<>();
+            for (int i = 0; i < ship.getSize(); i++){
                 if (checkCoordinate == x) {
                     Field field = getField(x+i,y);
                     if(field.isEmpty()){
-                        coords.add(field);
+                        coordinates.add(field);
                     } else {
+                        System.out.println("Field is not empty");
                         return false;
                     }
 
                 } else {
-                    Field field = getField(x+i,y);
+                    Field field = getField(x, y+i);
                     if(field.isEmpty()){
-                        coords.add(field);
+                        coordinates.add(field);
                     } else {
+                        System.out.println("Field is not empty");
                         return false;
                     }
                 }
             }
-            coords.forEach(field -> field.placeShip(ship));
+            coordinates.forEach(field -> field.placeShip(ship));
             ships.add(ship);
             return true;
         }
+        System.out.println("Out of map");
         return false;
     }
 

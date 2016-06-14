@@ -9,16 +9,19 @@ import org.springframework.context.annotation.Configuration;
 public class Beans {
     @Bean
     public Player player() {
-        return new User(board());
+        return new User(board(), shipsFactory());
     }
 
     @Bean
     public Cpu cpu() {
-        return new Cpu(board());
+        return new Cpu(board(), shipsFactory());
     }
 
     @Bean
     public Board board() {
         return new Board(18);
     }
+
+    @Bean
+    public ShipsFactory shipsFactory() { return new ShipsFactory(3,2,2,2,1);}
 }

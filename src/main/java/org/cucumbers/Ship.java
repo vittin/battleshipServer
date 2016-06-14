@@ -15,4 +15,8 @@ public class Ship {
     boolean isAlive() {
         return size - shootedParts > 0;
     }
+
+    public int getSize() {
+        return size;
+    }
 }

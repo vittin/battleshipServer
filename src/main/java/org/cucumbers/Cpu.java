@@ -9,15 +9,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class Cpu implements Player {
 
     Board board;
+    ShipsFactory shipsFactory;
 
     @Autowired
-    public Cpu(Board board){
+    public Cpu(Board board, ShipsFactory shipsFactory){
         this.board = board;
+        this.shipsFactory = shipsFactory;
     }
 
     @Override
     public boolean shoot(int x, int y){
         return board.shoot(x, y);
+    }
+
+    @Override
+    public boolean canStartGame(){
+        return shipsFactory.isFinished();
+    }
+
+    @Override
+    public int remainingShips(int shipsSize){
+        return 0;
     }
 
     @Override
