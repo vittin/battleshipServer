@@ -21,9 +21,13 @@ public class Board {
         }
     }
 
-    private Field getField(int x, int y) throws RuntimeException{
+    public int getSize() {
+        return size;
+    }
+
+    Field getField(int x, int y) throws RuntimeException{
         int index = y*size + x;
-        if (index < size * size){
+        if (x <= this.size && y <= this.size){
             return fields.get(index);
         } else {
             throw new RuntimeException("Out of bounds");
@@ -64,6 +68,11 @@ public class Board {
     }
 
     public boolean shoot(int x, int y) {
+
         return getField(x, y).hit();
+    }
+
+    int remainingShips(){
+        return ships.size();
     }
 }

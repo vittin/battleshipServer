@@ -10,6 +10,21 @@ public interface Player {
 
     boolean canStartGame();
 
-    boolean shoot(int x, int y);
+    //shoot to opponent -> he tell you did you hit him. (calling takeShoot() method).
+    boolean shootTo(int x, int y);
 
+    //opponent shoot to you -> tell him if he hit you (called by shootTo() method).
+    boolean takeShoot(int x, int y);
+
+    int[] getShootCoordinates();
+
+    void setLastHitShip(Ship ship);
+
+    boolean isHit();
+
+    boolean isShipFinished();
+
+    boolean isEndGame();
+
+    boolean isHuman();
 }
