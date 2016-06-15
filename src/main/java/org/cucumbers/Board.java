@@ -26,6 +26,7 @@ public class Board {
     }
 
     Field getField(int x, int y) throws RuntimeException{
+        System.out.println(x);
         int index = y*size + x;
         if (x <= this.size && y <= this.size){
             return fields.get(index);

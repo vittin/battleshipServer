@@ -64,6 +64,7 @@ public class PageController {
         try {
             hit = player.shootTo(x, y);
         } catch (RuntimeException e){
+            System.out.println(e.getMessage());
             hit = false;
             success = false;
         }
