@@ -31,28 +31,31 @@ class Cpu extends User implements ComputerPlayer {
     }
 
     @Override
-    public void generateShoot() {
-        if (killMode) {
-           killMode();
-        } else {
-          randomShoot();
-        }
+    public int[] generateShoot() {
+        int[] result;
+          result = randomShoot();
+
+        return result;
     }
 
-    private void  randomShoot() {
+    private int[] randomShoot() {
+        int x, y;
         try {
-            int x = generator.nextInt(board.getSize());
-            int y = generator.nextInt(board.getSize());
-            if (this.shootTo(x, y)) {
-                killMode = true;
-                originalX = x;
-                originalY = y;
+            x = generator.nextInt(board.getSize());
+            y = generator.nextInt(board.getSize());
+
+            if (!opponent.canShootHere(x, y)){
+                randomShoot();
             }
+
+
+            return new int[]{x, y};
 
         } catch (RuntimeException e ){
             randomShoot();
         }
 
+        return null;
     }
 
     private void killMode(){

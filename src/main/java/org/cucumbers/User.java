@@ -10,7 +10,7 @@ public class User implements Player {
     final Board board;
     final ShipsFactory shipsFactory;
     private final int[] shootCoordinates;
-    private Player opponent;
+    Player opponent;
     private boolean hit;
 
     @Autowired
@@ -32,14 +32,17 @@ public class User implements Player {
     }
 
     @Override
+    public boolean canShootHere(int x, int y){
+        return !board.getField(x, y).wasShot();
+    };
+
+    @Override
     public boolean isHit(){
         return hit;
     }
 
     @Override
     public boolean shootTo(int x, int y){
-        shootCoordinates[0] = x;
-        shootCoordinates[1] = y;
         hit = opponent.takeShoot(x, y);
         return hit;
     }

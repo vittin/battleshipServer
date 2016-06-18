@@ -6,17 +6,19 @@ public class Field {
 
     private boolean empty = true;
     private Ship ship;
+
     private boolean shot = false;
 
     public boolean hit() throws RuntimeException {
         if (!this.shot){
             this.shot = true;
+            boolean hasShip = this.hasShip();
 
-            if(!empty) {
+            if(hasShip) {
                 ship.damage();
             }
 
-            return !empty;
+            return hasShip;
         } else {
             throw new RuntimeException("field has already been hit");
         }
@@ -35,7 +37,12 @@ public class Field {
         return empty;
     }
 
+    public boolean wasShot() {
+        return shot;
+    }
+
     public boolean hasShip() {
-        return ship != null;
+        System.out.println("ship: " + this.ship);
+        return (this.ship != null);
     }
 }

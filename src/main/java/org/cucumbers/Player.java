@@ -26,4 +26,6 @@ public interface Player {
     boolean isEndGame();
 
     boolean isHuman();
+
+    boolean canShootHere(int x, int y);
 }

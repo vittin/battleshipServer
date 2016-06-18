@@ -69,7 +69,7 @@ public class PageController {
             success = false;
         }
 
-        boolean shipDestroyed = (hit) && !player.targetIsAlive(x, y);
+        boolean shipDestroyed = (hit) && !opponent.targetIsAlive(x, y);
 
         String response = String.format("{\n" +
                 "  \"hit\": \"%s\",\n" +
@@ -77,7 +77,7 @@ public class PageController {
                 "  \"success\": \"%s\"\n" +
                 "}", hit, shipDestroyed, success);
 
-        //todo: System.out.println(response);
+        System.out.println(response);
         return response;
 
 
@@ -85,20 +85,25 @@ public class PageController {
 
     @RequestMapping(value = "/getShoot", method = RequestMethod.GET, produces = "application/json")
     public String getShoot(){
-
+        int x, y;
+        boolean hit;
         if (!opponent.isHuman()){
             ComputerPlayer cpu = (ComputerPlayer) opponent;
-            cpu.generateShoot();
+            int[] shoot = cpu.generateShoot();
+            x = shoot[0];
+            y = shoot[1];
+        } else {
+            x = opponent.getShootCoordinates()[0];
+            y = opponent.getShootCoordinates()[1];
         }
 
-        int coordinates[] = opponent.getShootCoordinates();
-        boolean hit = opponent.isHit();
+        hit = opponent.shootTo(x, y);
 
         String response = String.format("{\n" +
                 "  \"x\": \"%d\",\n" +
                 "  \"y\": \"%d\",\n" +
                 "  \"hit\": \"%s\"\n" +
-                "}", coordinates[0], coordinates[1], hit);
+                "}", x, y, hit);
 
         //todo: System.out.println(response);
         return response;

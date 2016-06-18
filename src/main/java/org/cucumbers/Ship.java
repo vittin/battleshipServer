@@ -11,6 +11,10 @@ public class Ship {
     }
 
     boolean isAlive() {
+
+        System.out.println("s: " + size);
+        System.out.println("p: " + shotParts);
+
         return (size - shotParts) > 0;
     }
 
