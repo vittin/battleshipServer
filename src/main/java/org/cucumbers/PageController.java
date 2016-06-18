@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @EnableAutoConfiguration
 @RestController
-@CrossOrigin(origins = "http://localhost:63342")
+@CrossOrigin(origins = "http://localhost:63343")
 @RequestMapping("/api")
 public class PageController {
 
@@ -30,9 +30,10 @@ public class PageController {
         setPlayer(context.getBean("player", Player.class));
         setOpponent(context.getBean("cpu", Player.class));
         if (!opponent.isHuman()){
-            Cpu opponent = (Cpu) this.opponent;
+            ComputerPlayer opponent = (ComputerPlayer) this.opponent;
             opponent.fillBoard();
         }
+
         return "Hello player, java here";
     }
 
@@ -57,17 +58,18 @@ public class PageController {
     @RequestMapping(value = "/shoot", method = RequestMethod.POST, produces = "application/json")
     public String shoot(@RequestParam("x") int x, @RequestParam("y") int y){
 
-        boolean shipDestroyed = player.isShipFinished();
         boolean success = true;
         boolean hit;
 
         try {
             hit = player.shootTo(x, y);
         } catch (RuntimeException e){
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
             hit = false;
             success = false;
         }
+
+        boolean shipDestroyed = (hit) && !player.targetIsAlive(x, y);
 
         String response = String.format("{\n" +
                 "  \"hit\": \"%s\",\n" +
@@ -98,7 +100,7 @@ public class PageController {
                 "  \"hit\": \"%s\"\n" +
                 "}", coordinates[0], coordinates[1], hit);
 
-        System.out.println(response);
+        //todo: System.out.println(response);
         return response;
     }
 
@@ -108,6 +110,7 @@ public class PageController {
         String response = String.format("{\n" +
                 "  \"isEndGame\": \"%s\"\n" +
                 "}", player.isEndGame() || opponent.isEndGame());
+
 
         return response;
     }

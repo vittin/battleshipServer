@@ -16,13 +16,12 @@ public interface Player {
     //opponent shoot to you -> tell him if he hit you (called by shootTo() method).
     boolean takeShoot(int x, int y);
 
+    //opponent shot to player -> here are coordinates;
     int[] getShootCoordinates();
 
-    void setLastHitShip(Ship ship);
+    boolean targetIsAlive(int x, int y);
 
     boolean isHit();
-
-    boolean isShipFinished();
 
     boolean isEndGame();
 

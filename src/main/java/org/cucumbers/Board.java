@@ -26,7 +26,6 @@ public class Board {
     }
 
     Field getField(int x, int y) throws RuntimeException{
-        System.out.println(x);
         int index = y*size + x;
         if (x <= this.size && y <= this.size){
             return fields.get(index);
@@ -46,7 +45,6 @@ public class Board {
                     if(field.isEmpty()){
                         coordinates.add(field);
                     } else {
-                        System.out.println("Field is not empty");
                         return false;
                     }
 
@@ -55,7 +53,6 @@ public class Board {
                     if(field.isEmpty()){
                         coordinates.add(field);
                     } else {
-                        System.out.println("Field is not empty");
                         return false;
                     }
                 }
@@ -64,7 +61,6 @@ public class Board {
             ships.add(ship);
             return true;
         }
-        System.out.println("Out of map");
         return false;
     }
 

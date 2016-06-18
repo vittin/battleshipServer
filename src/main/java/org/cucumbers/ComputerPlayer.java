@@ -1,9 +1,10 @@
 package org.cucumbers;
 
 /**
- * Created by Mateusz on 2016-06-15.
+ * Created by Mateusz on 2016-06-18.
  */
 
-public abstract class ComputerPlayer implements Player {
-    public abstract void generateShoot();
+public interface ComputerPlayer extends Player {
+    void generateShoot();
+    void fillBoard();
 }

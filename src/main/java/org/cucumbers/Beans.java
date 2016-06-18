@@ -30,5 +30,5 @@ public class Beans {
 
     @Bean
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public ShipsFactory shipsFactory() { return new ShipsFactory(1,2,0,0,3);}
+    public ShipsFactory shipsFactory() { return new ShipsFactory(1,2,2,2,3);}
 }

@@ -3,28 +3,139 @@ package org.cucumbers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 /** Created by Mateusz on 2016-06-11. */
 
-public class Cpu extends ComputerPlayer {
+class Cpu extends User implements ComputerPlayer {
 
-    private final Board board;
-    private final ShipsFactory shipsFactory;
-    private final int[] shootCoordinates;
-    private Player opponent;
-    private Ship lastHitShip;
-    private boolean hit = false;
-    private boolean continueShooting = false;
-    private boolean horizontalIsGoodChoice;
-
-
-
-    @Autowired
-    public Cpu(Board board, ShipsFactory shipsFactory){
-        this.board = board;
-        this.shipsFactory = shipsFactory;
-        shootCoordinates = new int[2];
+    private Random generator  = new Random();
+    private boolean killMode = false;
+    private int originalX;
+    private int originalY;
+    private int nextX;
+    private int nextY;
+    private boolean aimedShot=false;
+    private Directions shootDirections=null;
+    private List<Directions> directions = new ArrayList<Directions>(){{
+        add(Directions.LEFT);
+        add(Directions.RIGHT);
+        add(Directions.UP);
+        add(Directions.DOWN);
+    }} ;
+    private int possibilitiesLeft = directions.size();
+    Cpu(Board board, ShipsFactory shipsFactory) {
+        super(board, shipsFactory);
     }
 
+    @Override
+    public void generateShoot() {
+        if (killMode) {
+           killMode();
+        } else {
+          randomShoot();
+        }
+    }
+
+    private void  randomShoot() {
+        try {
+            int x = generator.nextInt(board.getSize());
+            int y = generator.nextInt(board.getSize());
+            if (this.shootTo(x, y)) {
+                killMode = true;
+                originalX = x;
+                originalY = y;
+            }
+
+        } catch (RuntimeException e ){
+            randomShoot();
+        }
+
+    }
+
+    private void killMode(){
+
+        if (targetIsAlive(originalX, originalY)) {
+
+            if (!aimedShot) {
+                shootDirections = directions.get(generator.nextInt(possibilitiesLeft));
+                nextX = originalX;
+                nextY = originalY;
+            }
+
+            switch (shootDirections) {
+                case LEFT:
+                    nextX = nextX - 1;
+                    if (shootTo(nextX, nextY)) {
+                        goodGuess(Directions.UP,Directions.DOWN);
+                    }
+                    else {
+                        badGuess(Directions.LEFT);
+                    }
+                    break;
+                case RIGHT:
+                    nextX += 1;
+                    if (shootTo(nextX, nextY)) {
+                        goodGuess(Directions.UP,Directions.DOWN);
+                    }
+                    else {
+                        badGuess(Directions.RIGHT);
+                    }
+                    break;
+                case UP:
+                    nextY += 1;
+                    if (shootTo(nextX, nextY)) {
+                        goodGuess(Directions.LEFT,Directions.RIGHT);
+                    }
+                    else {
+                        badGuess(Directions.UP);
+                    }
+                    break;
+                case DOWN:
+                    nextY += 1;
+                    if (shootTo(nextX, nextY)) {
+                        goodGuess(Directions.LEFT,Directions.RIGHT);
+                    }
+                    else {
+                        badGuess(Directions.DOWN);
+                    }
+                    break;
+            }
+        }
+
+        else {
+            endKillMode();}
+    }
+
+    private void goodGuess(Directions direction1, Directions direction2){
+        aimedShot=true;
+        directions.remove(direction1);
+        directions.remove(direction2);
+        possibilitiesLeft -= 2;
+    }
+
+    private void badGuess(Directions direction){
+        aimedShot=false;
+        possibilitiesLeft -=1;
+        directions.remove(direction);
+
+    }
+
+    private void endKillMode(){
+        killMode=false;
+        directions.clear();
+        directions.add(Directions.LEFT);
+        directions.add(Directions.RIGHT);
+        directions.add(Directions.UP);
+        directions.add(Directions.DOWN);
+        possibilitiesLeft = directions.size();
+        generateShoot();
+    }
+
+
+    @Override
     public void fillBoard(){
         for (int i=5; i>0; i--){
             while(shipsFactory.remaining(i) > 0){
@@ -40,92 +151,14 @@ public class Cpu extends ComputerPlayer {
     }
 
     @Override
-    public int[] getShootCoordinates(){
-        return this.shootCoordinates;
-    }
-
     @Autowired
     @Qualifier("player")
     public void setOpponent(Player opponent){
-        this.opponent = opponent;
-    }
-
-    @Override
-    public boolean isHit(){
-        return this.hit;
-    }
-
-    @Override
-    public boolean shootTo(int x, int y){
-        shootCoordinates[0] = x;
-        shootCoordinates[1] = y;
-        hit = opponent.takeShoot(x, y);
-        return hit;
-    }
-
-    public void generateShoot(){
-        int x, y;
-        try {
-           if(false){
-            } else {
-                x = (int) (Math.random() * board.getSize());
-                y = (int) (Math.random() * board.getSize());
-                shootTo(x, y);
-            }
-        } catch (RuntimeException e){
-            this.generateShoot();
-            return;
-        }
-
-        if (lastHitShip != null && !lastHitShip.isAlive()){
-            continueShooting = false;
-        }
-        this.shootCoordinates[0] = x;
-        this.shootCoordinates[1] = y;
-    }
-
-    @Override
-    public boolean takeShoot(int x, int y) {
-        boolean shoot = board.shoot(x, y);
-        if (shoot) {
-            opponent.setLastHitShip(board.getField(x, y).getShip());
-        }
-
-        return shoot;
-    }
-
-    @Override
-    public void setLastHitShip(Ship lastHitShip){
-        this.lastHitShip = lastHitShip;
-    }
-
-    @Override
-    public boolean isShipFinished(){
-        return !lastHitShip.isAlive();
-    }
-    @Override
-    public boolean canStartGame(){
-        return shipsFactory.isFinished();
-    }
-
-    @Override
-    public int remainingShips(int shipsSize){
-        return 0;
-    }
-
-    @Override
-    public boolean placeShip(int x, int y, int size, boolean horizontally) {
-        return false;
-    }
-
-    @Override
-    public boolean isEndGame(){
-        return board.remainingShips() == 0;
+        super.setOpponent(opponent);
     }
 
     @Override
     public boolean isHuman(){
         return false;
     }
-
 }

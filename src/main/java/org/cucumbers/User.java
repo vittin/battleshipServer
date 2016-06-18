@@ -7,11 +7,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 public class User implements Player {
 
-    private final Board board;
-    private final ShipsFactory shipsFactory;
+    final Board board;
+    final ShipsFactory shipsFactory;
     private final int[] shootCoordinates;
     private Player opponent;
-    private Ship lastHitShip;  //my last good shot;
     private boolean hit;
 
     @Autowired
@@ -47,21 +46,12 @@ public class User implements Player {
 
     @Override
     public boolean takeShoot(int x, int y){
-        boolean shoot = board.shoot(x,y);
-        if(shoot){
-            opponent.setLastHitShip(board.getField(x,y).getShip());
-        }
-        return shoot;
+        return board.shoot(x,y);
     }
 
     @Override
-    public void setLastHitShip(Ship lastHitShip){
-        this.lastHitShip = lastHitShip;
-    }
-
-    @Override
-    public boolean isShipFinished() {
-        return lastHitShip != null && !lastHitShip.isAlive();
+    public boolean targetIsAlive(int x, int y){
+        return board.getField(x, y).hasShip() && board.getField(x, y).getShip().isAlive();
     }
 
     @Override
@@ -77,13 +67,11 @@ public class User implements Player {
     @Override
     public boolean placeShip(int x, int y, int size, boolean horizontally){
         if (this.shipsFactory.remaining(size) == 0){
-            System.out.println("remaining 0");
             return false;
         }
         try {
             Ship ship = this.shipsFactory.make(size);
             boolean response = this.board.placeShip(ship, x, y, horizontally);
-            System.out.println("response: " + response);
             if (response){
                 shipsFactory.wasPlaced(size);
             }

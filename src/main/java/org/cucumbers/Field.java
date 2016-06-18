@@ -34,4 +34,8 @@ public class Field {
     public boolean isEmpty() {
         return empty;
     }
+
+    public boolean hasShip() {
+        return ship != null;
+    }
 }
