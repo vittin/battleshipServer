@@ -5,9 +5,11 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /** Created by Mateusz on 2016-06-11. */
 
+@Component
 @Configuration
 public class Beans {
     @Bean
@@ -18,7 +20,7 @@ public class Beans {
 
     @Bean()
     @Qualifier("cpu")
-    public Cpu cpu() {
+    public Player cpu() {
         return new Cpu(board(), shipsFactory());
     }
 
@@ -30,5 +32,5 @@ public class Beans {
 
     @Bean
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public ShipsFactory shipsFactory() { return new ShipsFactory(1,2,2,2,3);}
+    public ShipsFactory shipsFactory() { return new ShipsFactory(0,0,0,0,1);}
 }

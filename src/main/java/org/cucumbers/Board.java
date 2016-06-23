@@ -1,20 +1,22 @@
 package org.cucumbers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /** Created by Mateusz on 2016-06-11. */
 
 public class Board {
 
     private final List<Field> fields;
-    private final List<Ship> ships;
+    private final Map<Ship, Integer[][]> ships;
     private int size;
 
     public Board(int size) {
         this.size = size;
         this.fields = new ArrayList<>(size*size);
-        this.ships = new ArrayList<>();
+        this.ships = new HashMap<>();
         for (int i = 0; i < size*size; i++){
             fields.add(new Field());
         }
@@ -35,14 +37,17 @@ public class Board {
 
     public boolean placeShip(Ship ship, int x, int y, boolean horizontally){
         int checkCoordinate;
+        int shipSize = ship.getSize();
         if (horizontally){checkCoordinate = x;} else {checkCoordinate = y;}
-        if (checkCoordinate + ship.getSize() <= this.size){
+        if (checkCoordinate + shipSize <= this.size){
             List<Field> fields = new ArrayList<>();
-            for (int i = 0; i < ship.getSize(); i++){
+            Integer position[][] = new Integer[shipSize][2];
+            for (int i = 0; i < shipSize; i++){
                 if (checkCoordinate == x) {
                     Field field = getField(x+i,y);
                     if(field.isEmpty()){
                         fields.add(field);
+                        position[i] = new Integer[]{2, 3};
                     } else {
                         return false;
                     }
@@ -51,6 +56,7 @@ public class Board {
                     Field field = getField(x, y+i);
                     if(field.isEmpty()){
                         fields.add(field);
+                        position[i] = new Integer[]{2, 3};
                     } else {
                         return false;
                     }
@@ -58,15 +64,14 @@ public class Board {
             }
 
             fields.forEach(field -> field.placeShip(ship));
-            ships.add(ship);
+            ships.put(ship, position);
             return true;
         }
         return false;
     }
 
-    public void removeShip(Ship ship){
-        int index = ships.indexOf(ship);
-        ships.remove(index);
+    public Map<Ship,Integer[][]> getAllShipsPosition() {
+        return ships;
     }
 
     public boolean shoot(int x, int y) {
@@ -77,4 +82,5 @@ public class Board {
     int remainingShips(){
         return ships.size();
     }
+
 }

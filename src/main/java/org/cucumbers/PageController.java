@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @EnableAutoConfiguration
 @RestController
-@CrossOrigin(origins = "http://localhost:63343")
+@CrossOrigin(origins = "http://localhost:63342")
 @RequestMapping("/api")
 public class PageController {
 
@@ -77,7 +77,7 @@ public class PageController {
                 "  \"success\": \"%s\"\n" +
                 "}", hit, shipDestroyed, success);
 
-        System.out.println(response);
+        //System.out.println(response);
         return response;
 
 
@@ -87,6 +87,7 @@ public class PageController {
     public String getShoot(){
         int x, y;
         boolean hit;
+
         if (!opponent.isHuman()){
             ComputerPlayer cpu = (ComputerPlayer) opponent;
             int[] shoot = cpu.generateShoot();

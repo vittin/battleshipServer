@@ -6,5 +6,4 @@ package org.cucumbers;
 
 public interface ComputerPlayer extends Player {
     int[] generateShoot();
-    void fillBoard();
 }

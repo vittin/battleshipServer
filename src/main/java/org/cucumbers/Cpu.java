@@ -3,161 +3,164 @@ package org.cucumbers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Random;
 
-/** Created by Mateusz on 2016-06-11. */
+/** Created by Mateusz on 2016-06-22. */
 
-class Cpu extends User implements ComputerPlayer {
+public class Cpu extends User implements ComputerPlayer {
 
-    private Random generator  = new Random();
-    private boolean killMode = false;
-    private int originalX;
-    private int originalY;
-    private int nextX;
-    private int nextY;
-    private boolean aimedShot=false;
-    private Directions shootDirections=null;
-    private List<Directions> directions = new ArrayList<Directions>(){{
-        add(Directions.LEFT);
-        add(Directions.RIGHT);
-        add(Directions.UP);
-        add(Directions.DOWN);
-    }} ;
-    private int possibilitiesLeft = directions.size();
-    Cpu(Board board, ShipsFactory shipsFactory) {
+    private Random random;
+    private int boardSize;
+
+    private boolean finishShip;
+    private int[] targetCoordinates;
+    private Orientation orientation;
+    private int[][] edgeCoordinates;
+    private int lastIndex;
+
+
+
+    @Autowired
+    public Cpu(Board board, ShipsFactory shipsFactory) {
         super(board, shipsFactory);
-    }
 
-    @Override
-    public int[] generateShoot() {
-        int[] result;
-          result = randomShoot();
+        random = new Random(123123);
+        boardSize = board.getSize();
 
-        return result;
-    }
-
-    private int[] randomShoot() {
-        int x, y;
-        try {
-            x = generator.nextInt(board.getSize());
-            y = generator.nextInt(board.getSize());
-
-            if (!opponent.canShootHere(x, y)){
-                randomShoot();
-            }
-
-
-            return new int[]{x, y};
-
-        } catch (RuntimeException e ){
-            randomShoot();
-        }
-
-        return null;
-    }
-
-    private void killMode(){
-
-        if (targetIsAlive(originalX, originalY)) {
-
-            if (!aimedShot) {
-                shootDirections = directions.get(generator.nextInt(possibilitiesLeft));
-                nextX = originalX;
-                nextY = originalY;
-            }
-
-            switch (shootDirections) {
-                case LEFT:
-                    nextX = nextX - 1;
-                    if (shootTo(nextX, nextY)) {
-                        goodGuess(Directions.UP,Directions.DOWN);
-                    }
-                    else {
-                        badGuess(Directions.LEFT);
-                    }
-                    break;
-                case RIGHT:
-                    nextX += 1;
-                    if (shootTo(nextX, nextY)) {
-                        goodGuess(Directions.UP,Directions.DOWN);
-                    }
-                    else {
-                        badGuess(Directions.RIGHT);
-                    }
-                    break;
-                case UP:
-                    nextY += 1;
-                    if (shootTo(nextX, nextY)) {
-                        goodGuess(Directions.LEFT,Directions.RIGHT);
-                    }
-                    else {
-                        badGuess(Directions.UP);
-                    }
-                    break;
-                case DOWN:
-                    nextY += 1;
-                    if (shootTo(nextX, nextY)) {
-                        goodGuess(Directions.LEFT,Directions.RIGHT);
-                    }
-                    else {
-                        badGuess(Directions.DOWN);
-                    }
-                    break;
-            }
-        }
-
-        else {
-            endKillMode();}
-    }
-
-    private void goodGuess(Directions direction1, Directions direction2){
-        aimedShot=true;
-        directions.remove(direction1);
-        directions.remove(direction2);
-        possibilitiesLeft -= 2;
-    }
-
-    private void badGuess(Directions direction){
-        aimedShot=false;
-        possibilitiesLeft -=1;
-        directions.remove(direction);
-
-    }
-
-    private void endKillMode(){
-        killMode=false;
-        directions.clear();
-        directions.add(Directions.LEFT);
-        directions.add(Directions.RIGHT);
-        directions.add(Directions.UP);
-        directions.add(Directions.DOWN);
-        possibilitiesLeft = directions.size();
-        generateShoot();
-    }
-
-
-    @Override
-    public void fillBoard(){
-        for (int i=5; i>0; i--){
-            while(shipsFactory.remaining(i) > 0){
-                Ship ship = shipsFactory.make(i);
-                int x = (int) (Math.random() * board.getSize());
-                int y = (int) (Math.random() * board.getSize());
-                boolean horizontally = Math.random() > 0.5;
-                if (board.placeShip(ship, x, y, horizontally)){
-                    shipsFactory.wasPlaced(i);
-                }
-            }
-        }
+        finishShip = false;
+        targetCoordinates = new int[2];
+        orientation = Orientation.UNDEFINED;
+        edgeCoordinates = new int[2][2];
     }
 
     @Override
     @Autowired
     @Qualifier("player")
     public void setOpponent(Player opponent){
-        super.setOpponent(opponent);
+        this.opponent = opponent;
+    }
+
+    @Override
+    public int[] generateShoot() {
+
+        int[] nextShoot;
+        if (this.finishShip){
+
+            int x = targetCoordinates[0];
+            int y = targetCoordinates[1];
+
+            if (opponent.targetIsAlive(x, y)){
+                System.out.println("finish");
+                nextShoot = destroyShip();
+            } else {
+                finishShip = false;
+                orientation = Orientation.UNDEFINED;
+                //todo: reset edge
+
+                this.targetCoordinates = new int[2];
+                System.out.println("random1");
+                nextShoot = randomShoot();
+            }
+
+        } else {
+            System.out.println("random2");
+            nextShoot = randomShoot();
+        }
+
+        return nextShoot;
+    }
+
+    private int[] randomShoot() {
+        int[] nextShoot = new int[]{random.nextInt(boardSize), random.nextInt(boardSize)};
+
+        if (!opponent.canShootHere(nextShoot[0], nextShoot[1])){
+            return randomShoot();
+        }
+
+        return nextShoot;
+    }
+
+    private int[] destroyShip(){
+        try {
+            switch (orientation) {
+
+                case UNDEFINED: {
+                    return typeNextShoot(Direction.random());
+                }
+
+                case VERTICALLY: {
+                    return typeNextShoot(Direction.randomVertically());
+                }
+
+                case HORIZONTALLY: {
+                    return typeNextShoot(Direction.randomHorizontally());
+                }
+            }
+        } catch (RuntimeException e){
+            System.out.println(e.getMessage());
+            return destroyShip();
+        }
+        return null;
+    }
+
+    private int[] typeNextShoot(Direction direction){
+
+        int[] nextShoot = new int[2];
+
+        lastIndex = direction.index();
+        int[] difference = direction.getDifference();
+        int xDiff = difference[0];
+        int yDiff = difference[1];
+
+            nextShoot[0] = edgeCoordinates[lastIndex][0] + xDiff;
+            nextShoot[1] = edgeCoordinates[lastIndex][1] + yDiff;
+
+
+        if (!opponent.canShootHere(nextShoot[0], nextShoot[1])){
+            System.out.println("error: " + nextShoot[0] + ", " + nextShoot[1]);
+            throw new RuntimeException("Field have already been hit!");
+        }
+
+        return nextShoot;
+    }
+
+    @Override
+    public boolean shootTo(int x, int y){
+
+        boolean hit = super.shootTo(x, y);
+
+        if (hit){
+
+            this.edgeCoordinates[lastIndex][0] = x;
+            this.edgeCoordinates[lastIndex][1] = y;
+
+
+            if(!this.finishShip){
+
+                this.finishShip = true;
+
+                this.targetCoordinates[0] = x;
+                this.targetCoordinates[1] = y;
+
+                this.edgeCoordinates[0][0] = targetCoordinates[0];
+                this.edgeCoordinates[0][1] = targetCoordinates[1];
+                this.edgeCoordinates[1][0] = targetCoordinates[0];
+                this.edgeCoordinates[1][1] = targetCoordinates[1];
+
+            }
+
+            if (!Arrays.equals(edgeCoordinates[0], edgeCoordinates[1])){
+                if (edgeCoordinates[0][0] == edgeCoordinates[1][0]){
+                    orientation = Orientation.HORIZONTALLY;
+                } else {
+                    orientation = Orientation.VERTICALLY;
+                }
+            }
+        }
+
+
+        return hit;
     }
 
     @Override

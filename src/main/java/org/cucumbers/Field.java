@@ -42,7 +42,6 @@ public class Field {
     }
 
     public boolean hasShip() {
-        System.out.println("ship: " + this.ship);
         return (this.ship != null);
     }
 }
