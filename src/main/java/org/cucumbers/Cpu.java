@@ -25,7 +25,7 @@ public class Cpu extends User implements ComputerPlayer {
     public Cpu(Board board, ShipsFactory shipsFactory) {
         super(board, shipsFactory);
 
-        random = new Random(123123);
+        random = new Random();
         boardSize = board.getSize();
 
         finishShip = false;
