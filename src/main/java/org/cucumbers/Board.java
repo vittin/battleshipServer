@@ -1,9 +1,6 @@
 package org.cucumbers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /** Created by Mateusz on 2016-06-11. */
 
@@ -41,13 +38,14 @@ public class Board {
         if (horizontally){checkCoordinate = x;} else {checkCoordinate = y;}
         if (checkCoordinate + shipSize <= this.size){
             List<Field> fields = new ArrayList<>();
+            List<Field> notAvailable = new ArrayList<>();
             Integer position[][] = new Integer[shipSize][2];
             for (int i = 0; i < shipSize; i++){
                 if (checkCoordinate == x) {
                     Field field = getField(x+i,y);
                     if(field.isEmpty()){
                         fields.add(field);
-                        position[i] = new Integer[]{2, 3};
+                        notAvailable.addAll(getFieldNeighbours(x, y));
                     } else {
                         return false;
                     }
@@ -56,7 +54,7 @@ public class Board {
                     Field field = getField(x, y+i);
                     if(field.isEmpty()){
                         fields.add(field);
-                        position[i] = new Integer[]{2, 3};
+                        notAvailable.addAll(getFieldNeighbours(x, y));
                     } else {
                         return false;
                     }
@@ -65,9 +63,25 @@ public class Board {
 
             fields.forEach(field -> field.placeShip(ship));
             ships.put(ship, position);
+            notAvailable.forEach(Field::lock);
             return true;
         }
         return false;
+    }
+
+    private List getFieldNeighbours(int x, int y) {
+        ArrayList<Field> neighbours = new ArrayList<>();
+        for (int i = -1; i <= 1; i++){
+            for (int j = -1; j <= 1; j++){
+                if (i != 0 || j != 0) {
+                    try {
+                        neighbours.add(getField(x + i, y + j));
+                    } catch (Exception ignored){}
+                }
+            }
+        }
+
+        return neighbours;
     }
 
     public Map<Ship,Integer[][]> getAllShipsPosition() {

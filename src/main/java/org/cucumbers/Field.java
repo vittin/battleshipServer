@@ -29,6 +29,10 @@ public class Field {
         this.ship = ship;
     }
 
+    void lock() {
+        this.empty = false;
+    }
+
     public Ship getShip(){
         return this.ship;
     }
