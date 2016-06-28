@@ -10,9 +10,9 @@ import java.util.Random;
 enum Direction {
     LEFT(-1, 0, 0),RIGHT(1, 0, 1),UP(0, -1, 0),DOWN(0, 1, 1);
 
-    private int xDiff;
-    private int yDiff;
-    private int index;
+    private final int xDiff;
+    private final int yDiff;
+    private final int index;
 
     Direction(int x, int y, int index){
         xDiff = x;

@@ -8,15 +8,15 @@ import java.util.Random;
 
 /** Created by Mateusz on 2016-06-22. */
 
-public class Cpu extends User implements ComputerPlayer {
+class Cpu extends User implements ComputerPlayer {
 
-    private Random random;
-    private int boardSize;
+    private final Random random;
+    private final int boardSize;
 
     private boolean finishShip;
     private int[] targetCoordinates;
     private Orientation orientation;
-    private int[][] edgeCoordinates;
+    private final int[][] edgeCoordinates;
     private int lastIndex;
 
 

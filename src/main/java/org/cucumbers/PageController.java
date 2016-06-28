@@ -13,20 +13,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class PageController {
 
-    private ApplicationContext context;
     private Player player;
     private Player opponent;
 
-    public void setPlayer(Player player) {
+    private void setPlayer(Player player) {
         this.player = player;
     }
-    public void setOpponent(Player opponent) {
+    private void setOpponent(Player opponent) {
         this.opponent = opponent;
     }
 
     @RequestMapping(value = "/initGame", method = RequestMethod.GET, produces = "text/plain")
     public String startGame(){
-        context = new AnnotationConfigApplicationContext(Beans.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(Beans.class);
         setPlayer(context.getBean("player", Player.class));
         setOpponent(context.getBean("cpu", Player.class));
         if (!opponent.isHuman()){
@@ -47,12 +46,11 @@ public class PageController {
     public String placeShip(@RequestParam("x") int x, @RequestParam("y") int y, @RequestParam("size") int size,
                                @RequestParam("horizontally") boolean horizontally){
         boolean response = player.placeShip(x,y,size,horizontally);
-        String JSONString = String.format("{\n" +
+        return String.format("{\n" +
                 "  \"response\": \"%s\",\n" +
                 "  \"remaining\": \"%d\",\n" +
                 "  \"complete\": \"%s\"\n" +
                 "}", response, player.remainingShips(size), player.canStartGame());
-        return JSONString;
     }
 
     @RequestMapping(value = "/shoot", method = RequestMethod.POST, produces = "application/json")
@@ -70,12 +68,11 @@ public class PageController {
 
         boolean shipDestroyed = (hit) && !opponent.targetIsAlive(x, y);
 
-        String response = String.format("{\n" +
+        return String.format("{\n" +
                 "  \"hit\": \"%s\",\n" +
                 "  \"dead\": \"%s\",\n" +
                 "  \"success\": \"%s\"\n" +
                 "}", hit, shipDestroyed, success);
-        return response;
 
 
     }
@@ -97,24 +94,20 @@ public class PageController {
 
         hit = opponent.shootTo(x, y);
 
-        String response = String.format("{\n" +
+        return String.format("{\n" +
                 "  \"x\": \"%d\",\n" +
                 "  \"y\": \"%d\",\n" +
                 "  \"hit\": \"%s\"\n" +
                 "}", x, y, hit);
-
-        return response;
     }
 
     @RequestMapping(value = "/endGame", method = RequestMethod.GET, produces = "application/json")
     public String isEndGame(){
 
-        String response = String.format("{\n" +
+
+        return String.format("{\n" +
                 "  \"isEndGame\": \"%s\"\n" +
                 "}", player.isEndGame() || opponent.isEndGame());
-
-
-        return response;
     }
 
 

@@ -2,11 +2,11 @@ package org.cucumbers;
 
 /** Created by Mateusz on 2016-06-11. */
 
-public class Ship {
-    private int size;
+class Ship {
+    private final int size;
     private int shotParts = 0;
 
-    public Ship(int size){
+    Ship(int size){
         this.size = size;
     }
 
@@ -15,11 +15,11 @@ public class Ship {
         return (size - shotParts) > 0;
     }
 
-    public int getSize() {
+    int getSize() {
         return size;
     }
 
-    public void damage() {
+    void damage() {
         this.shotParts = this.shotParts + 1;
     }
 }

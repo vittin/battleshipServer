@@ -3,17 +3,14 @@ package org.cucumbers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.util.Map;
-
 /** Created by Mateusz on 2016-06-11. */
 
-public class User implements Player {
+class User implements Player {
 
-    final Board board;
-    final ShipsFactory shipsFactory;
+    private final Board board;
+    private final ShipsFactory shipsFactory;
     Player opponent;
-    final int[] shootCoordinates;
-    boolean hit;
+    private final int[] shootCoordinates;
 
     @Autowired
     public User(Board board, ShipsFactory shipsFactory) {
@@ -29,7 +26,7 @@ public class User implements Player {
     }
 
     @Override
-    public Map<Ship, Integer[][]> fillBoard(){
+    public void fillBoard(){
         for (int i=5; i>0; i--){
             while(shipsFactory.remaining(i) > 0){
                 Ship ship = shipsFactory.make(i);
@@ -41,7 +38,6 @@ public class User implements Player {
                 }
             }
         }
-        return board.getAllShipsPosition();
     }
 
 
@@ -53,16 +49,11 @@ public class User implements Player {
     @Override
     public boolean canShootHere(int x, int y){
         return !board.getField(x, y).wasShot();
-    };
-
-    @Override
-    public boolean wasHit(){
-        return hit;
     }
 
     @Override
     public boolean shootTo(int x, int y){
-        hit = opponent.takeShoot(x, y);
+        boolean hit = opponent.takeShoot(x, y);
         shootCoordinates[0] = x;
         shootCoordinates[1] = y;
         return hit;
@@ -90,7 +81,6 @@ public class User implements Player {
 
     @Override
     public boolean placeShip(int x, int y, int size, boolean horizontally){
-        System.out.println("USERRRRRRRRRRRR");
         if (this.shipsFactory.remaining(size) == 0){
             return false;
         }

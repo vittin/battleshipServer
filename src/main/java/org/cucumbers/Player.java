@@ -1,7 +1,5 @@
 package org.cucumbers;
 
-import java.util.Map;
-
 /** Created by Mateusz on 2016-06-11. */
 
 public interface Player {
@@ -12,7 +10,7 @@ public interface Player {
     // for example:
     // ship1: [ [2,3], [2,4], [2,5], [2,6] ],
     // ship2: [ [5,1], [6,1], [7,1] ]
-    Map<Ship, Integer[][]> fillBoard();
+    void fillBoard();
 
     boolean placeShip(int x, int y, int size, boolean horizontally);
 
@@ -28,8 +26,6 @@ public interface Player {
     int[] getShootCoordinates();
 
     boolean targetIsAlive(int x, int y);
-
-    boolean wasHit();
 
     boolean isEndGame();
 

@@ -2,14 +2,14 @@ package org.cucumbers;
 
 /** Created by Mateusz on 2016-06-11. */
 
-public class Field {
+class Field {
 
     private boolean empty = true;
     private Ship ship;
 
     private boolean shot = false;
 
-    public boolean hit() throws RuntimeException {
+    boolean hit() throws RuntimeException {
         if (!this.shot){
             this.shot = true;
             boolean hasShip = this.hasShip();
@@ -33,19 +33,19 @@ public class Field {
         this.empty = false;
     }
 
-    public Ship getShip(){
+    Ship getShip(){
         return this.ship;
     }
 
-    public boolean isEmpty() {
+    boolean isEmpty() {
         return empty;
     }
 
-    public boolean wasShot() {
+    boolean wasShot() {
         return shot;
     }
 
-    public boolean hasShip() {
+    boolean hasShip() {
         return (this.ship != null);
     }
 }
