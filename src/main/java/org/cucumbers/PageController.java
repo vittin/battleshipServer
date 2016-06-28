@@ -64,7 +64,6 @@ public class PageController {
         try {
             hit = player.shootTo(x, y);
         } catch (RuntimeException e){
-            //System.out.println(e.getMessage());
             hit = false;
             success = false;
         }
@@ -76,8 +75,6 @@ public class PageController {
                 "  \"dead\": \"%s\",\n" +
                 "  \"success\": \"%s\"\n" +
                 "}", hit, shipDestroyed, success);
-
-        //System.out.println(response);
         return response;
 
 
@@ -106,7 +103,6 @@ public class PageController {
                 "  \"hit\": \"%s\"\n" +
                 "}", x, y, hit);
 
-        //todo: System.out.println(response);
         return response;
     }
 

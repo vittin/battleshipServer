@@ -90,6 +90,7 @@ public class User implements Player {
 
     @Override
     public boolean placeShip(int x, int y, int size, boolean horizontally){
+        System.out.println("USERRRRRRRRRRRR");
         if (this.shipsFactory.remaining(size) == 0){
             return false;
         }

@@ -32,32 +32,26 @@ public class Board {
         }
     }
 
-    public boolean placeShip(Ship ship, int x, int y, boolean horizontally){
-        int checkCoordinate;
+    public boolean placeShip(Ship ship, int xCoord, int yCoord, boolean horizontally){
+        Integer x = xCoord;
+        Integer y = yCoord;
+        Integer checkCoordinate;
         int shipSize = ship.getSize();
         if (horizontally){checkCoordinate = x;} else {checkCoordinate = y;}
         if (checkCoordinate + shipSize <= this.size){
             List<Field> fields = new ArrayList<>();
             List<Field> notAvailable = new ArrayList<>();
             Integer position[][] = new Integer[shipSize][2];
-            for (int i = 0; i < shipSize; i++){
-                if (checkCoordinate == x) {
-                    Field field = getField(x+i,y);
-                    if(field.isEmpty()){
-                        fields.add(field);
-                        notAvailable.addAll(getFieldNeighbours(x, y));
-                    } else {
-                        return false;
-                    }
 
+            for (int i = 0; i < shipSize; i++){
+
+                Field field = getField(x,y);
+                if(field.isEmpty()){
+                    fields.add(field);
+                    notAvailable.addAll(getFieldNeighbours(x, y));
+                    if (horizontally){x++;} else {y++;}
                 } else {
-                    Field field = getField(x, y+i);
-                    if(field.isEmpty()){
-                        fields.add(field);
-                        notAvailable.addAll(getFieldNeighbours(x, y));
-                    } else {
-                        return false;
-                    }
+                    return false;
                 }
             }
 
@@ -69,8 +63,8 @@ public class Board {
         return false;
     }
 
-    private List getFieldNeighbours(int x, int y) {
-        ArrayList<Field> neighbours = new ArrayList<>();
+    private List<Field> getFieldNeighbours(int x, int y) {
+        List<Field> neighbours = new ArrayList<>();
         for (int i = -1; i <= 1; i++){
             for (int j = -1; j <= 1; j++){
                 if (i != 0 || j != 0) {

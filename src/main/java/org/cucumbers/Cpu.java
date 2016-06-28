@@ -51,7 +51,6 @@ public class Cpu extends User implements ComputerPlayer {
             int y = targetCoordinates[1];
 
             if (opponent.targetIsAlive(x, y)){
-                System.out.println("finish");
                 nextShoot = destroyShip();
             } else {
                 finishShip = false;
@@ -59,12 +58,10 @@ public class Cpu extends User implements ComputerPlayer {
                 //todo: reset edge
 
                 this.targetCoordinates = new int[2];
-                System.out.println("random1");
                 nextShoot = randomShoot();
             }
 
         } else {
-            System.out.println("random2");
             nextShoot = randomShoot();
         }
 
@@ -98,7 +95,6 @@ public class Cpu extends User implements ComputerPlayer {
                 }
             }
         } catch (RuntimeException e){
-            System.out.println(e.getMessage());
             return destroyShip();
         }
         return null;
@@ -118,7 +114,6 @@ public class Cpu extends User implements ComputerPlayer {
 
 
         if (!opponent.canShootHere(nextShoot[0], nextShoot[1])){
-            System.out.println("error: " + nextShoot[0] + ", " + nextShoot[1]);
             throw new RuntimeException("Field have already been hit!");
         }
 
