@@ -1,0 +1,62 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Battleships</title>
+    <meta name="description" content="The classic battleships game">
+    <meta name="author" content="mati">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+
+
+
+<div id="titleDiv" class="container">
+    <div id="title" class="page-header center-block"><p class="text-center h1">Battleships Game</p></div>
+</div>
+
+<div class="jumbotron">
+
+<div id="startDiv" class="container">
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <button id="startButton" class="btn-warning btn-block btn-lg text-center">Start Game</button>
+        </div>
+        <div class="col-md-2"></div>
+
+    </div>
+</div>
+
+<div id="gameDiv" class="hidden container">
+    <div class="container">
+        <div id="canvasDiv row">
+            <div class="col-md-12">
+                <canvas width="1090px" height="540px" id="gameCanvas" class="center-block"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div id="info" class="row">
+            <div id=ships" class="col-md-8 btn-group-lg btn-group">
+                <button data-size="5" class="ship size5 btn-info btn-lg">5.jpg</button>
+                <button data-size="4" class="ship size4 btn-info btn-lg">4.jpg</button>
+                <button data-size="3" class="ship size3 btn-info btn-lg">3.jpg</button>
+                <button data-size="2" class="ship size2 btn-info btn-lg">2.jpg</button>
+                <button data-size="1" class="ship size1 btn-info btn-lg">1.bmp</button>
+            </div>
+            <div class="col-md-4"><p class="h3" id="infoBox">Put your ship on board</p></div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+<script src="js/jquery.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

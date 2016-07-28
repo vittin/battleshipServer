@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 @EnableAutoConfiguration
 @RestController
-@CrossOrigin(origins = "http://localhost:63343")
 @RequestMapping("/api")
 public class PageController {
 
