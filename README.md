@@ -16,8 +16,7 @@ After you place all ships (all buttons will be green), game starts automatically
 
 # Gameplay
 
-Game using standard battleship game rules. CPU don't know where you place ships like you don't know where it place its ship, so CPU
-can't "cheat" when he lose. However, when it hit your ship, it start shooting clever - let's play and see how it work!
+*under building*
 
 ![battleships-computerhit](https://cloud.githubusercontent.com/assets/9084222/17209986/58b3d5b2-54c0-11e6-9302-750751cbf1b5.png)
 
